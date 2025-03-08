@@ -8,11 +8,8 @@ const connectDB_atlas = async () => {
   const db_atlas = process.env.DB_URl;
   try {
     mongoose.set("strictQuery", true);
-    await mongoose.connect(db_atlas, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    await mongoose.connection.db.admin().command({ ping: 1 });
+    await mongoose.connect(db_atlas);
+    await mongoose.connection.db.admin('admin').command({ ping: 1 });
     console.log('MongoDB Atlas Connected..!!');
     logger.logActivity(loggerStatus.INFO, null, 'MongoDB Atlas Connected!', null, OPERATIONS.MONGODB.CONNECT);
   } catch (err) {

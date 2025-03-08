@@ -26,9 +26,9 @@ const processLogin = async (userCredential, password, username) => {
 
 module.exports = {
 
-    login : async (req, res, next) => {
+    login: async (req, res, next) => {
         const { username, password } = req.body;
-        
+
         if (!username || !password) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Username and Password required.!!', null, OPERATIONS.AUTH.LOGIN);
             res.status(400).json({ message: 'Username and Password required.!!' });
@@ -37,16 +37,16 @@ module.exports = {
         let userCredential;
         if (username.includes('@')) {
             // Find credential with user email as username
-            userCredential = await Users.findOne({ email : username }).catch((err) => {
+            userCredential = await Users.findOne({ email: username }).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.LOGIN);
             });
         } else {
             // Find credential with user phone no as username
-            userCredential = await Users.findOne({ phoneNo : username }).catch((err) => {
+            userCredential = await Users.findOne({ phoneNo: username }).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.LOGIN);
             });
         }
-       
+
         if (userCredential && userCredential != null) {
             if (userCredential.access) {
                 const jsontoken = await processLogin(userCredential, password, username)
@@ -60,7 +60,7 @@ module.exports = {
                 } else {
                     logger.logActivity(loggerStatus.ERROR, username, 'Invalid password!!', null, OPERATIONS.AUTH.LOGIN);
                     res.status(400).json({
-                        status:400,
+                        status: 400,
                         data: "Invalid password!!"
                     });
                     return;
@@ -68,16 +68,16 @@ module.exports = {
             } else {
                 logger.logActivity(loggerStatus.ERROR, username, 'Account is inavtive', null, OPERATIONS.AUTH.LOGIN);
                 res.status(400).json({
-                    status:400,
+                    status: 400,
                     data: "This account is not yet activated.!! Please contact your system adminstrator."
                 });
                 return;
             }
-           
+
         } else {
             logger.logActivity(loggerStatus.ERROR, username, 'Invalid username!!', null, OPERATIONS.AUTH.LOGIN);
             res.status(400).json({
-                status:400,
+                status: 400,
                 data: "Invalid username!!"
             });
             return;
@@ -86,23 +86,23 @@ module.exports = {
 
     changePassword: async (req, res, next) => {
         const { userEmail, newPassword } = req.body;
-        
+
         if (!userEmail || !newPassword) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Email and Password required.!!', null, OPERATIONS.AUTH.CHNAGE_PASS);
             res.status(400).json({ message: 'Email and Password required.!!' });
             return;
         } else {
-            userCredential = await Users.findOne({ where: { email : userEmail } }).catch((err) => {
+            userCredential = await Users.findOne({ where: { email: userEmail } }).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, userEmail, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.CHNAGE_PASS);
             });
 
             if (userCredential && userCredential != null) {
                 const salt = process.env.SALT;
                 const newpass = hashSync(newPassword, salt);
-                const userUpdated = await Users.update({ password: newpass}, { where: { id: userCredential.id }}).catch((err) => {
+                const userUpdated = await Users.update({ password: newpass }, { where: { id: userCredential.id } }).catch((err) => {
                     logger.logActivity(loggerStatus.ERROR, userEmail, 'Internal server error!!', err, OPERATIONS.AUTH.CHNAGE_PASS);
                     res.status(500).json({
-                        status:500,
+                        status: 500,
                         data: 'Internal server error..!! Please try after some time.'
                     });
                     return;

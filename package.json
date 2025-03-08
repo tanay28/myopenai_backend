@@ -3,9 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "seed": "node ./controllers/dbseedingController.js"
   },
   "dependencies": {
+    "@langchain/core": "^0.3.42",
+    "@langchain/langgraph": "^0.2.51",
+    "@langchain/langgraph-checkpoint-mongodb": "^0.0.6",
+    "@langchain/mongodb": "^0.1.0",
+    "@langchain/openai": "^0.4.4",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
@@ -24,6 +30,7 @@
     "nodemon": "^2.0.19",
     "otp-generator": "^4.0.0",
     "winston": "^3.8.1",
-    "winston-mongodb": "^5.0.7"
+    "winston-mongodb": "^5.0.7",
+    "zod": "^3.24.2"
   }
 }
